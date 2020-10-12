@@ -1,0 +1,79 @@
+				Voting Application in Kubernetes
+Project Summary
+This project demonstrates about makingvoting application in Kubernetes.
+First we are going to launch the EC2 instance in linux through AWS cloud
+We have configured security group and storage as our needs. Now we are going to install the kubernetes service and create the cluster. Create the pods and database, services and finally we will be running the Voting application.
+
+Install and configuration in Kubernetes
+In our linux machine we are going to download the Kubernetes configuration and install on our it.
+
+The commands are given below:
+	curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64 
+	chmod +x kops-linux-amd64
+	sudo mv kops-linux-amd64 /usr/local/bin/kops
+	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+	chmod +x ./kubectl
+	sudomv ./kubectl /usr/local/bin/kubectl
+	aws s3 mb s3://kube.in.k8s --region us-west-2
+
+Create and configuration in cluster
+	Now we are going to create and configureour cluster. 
+Once our cluster is created, check the our kubernetesservice  pods and nodes. The commands are given below:
+	vi ~/.bashrc
+	source ~/.bashrc
+	ssh-keygen
+	kops create cluster --state=${KOPS_STATE_STORE} --node-count=2 --master-size=t2.micro --node-size=t2.micro --zones=ap-south-1a,ap-south-1b --name=${KOPS_CLUSTER_NAME} --dns private --master-count 1
+	kops update cluster --yes
+	kops validate cluster
+	ssh admin@api.anadh.in
+	kubectl get nodes
+	kubectl get service
+
+Install Git and Download Configuration Files
+	We are installing the git service in our linux machine and used command clone command for to download the Configuration yaml file
+  clone the kubernetes example voting app from github.
+The commands are given below:
+	yum install git
+	git clone https://github.com/mmumshad/kubernetes-example-voting-app.git
+	
+Create the Voting application
+	We are going to create the voting application for kubernetes commands.
+ Change the directory for kubernetes example voting application directory. And 
+Run the voting application from the yaml file. 
+Verify the pods and service to use the kubernetes commands to check the external IP address to the web browser it will show the our voting web page.
+The commands are given below:
+	cd kubernetes-example-voting-app
+	kubectl create -f voting-app-pod.yml
+	kubectl create -f voting-app-service.yml
+	kubectl get pods,svc
+
+Create the database and redis application
+	We are going to create the database and redis for voting application for kubernetes commands.
+Run the database from the yaml file. And the run redis service application yaml file.
+Verify the pods and service to use kubernetes commands for service running status. 
+ The commands are given below:
+	kubectl create -f redis-pod.yml
+	kubectl create -f redis-service.yml
+	kubectl create -f postgres-pod.yml
+	kubectl create -f postgres-service.yml
+	kubectl get pods,svc
+
+Create the worker and result application
+	We are going to create the worker and result for voting application for kubernetes commands.
+Run the worker and result from the yaml file. And the run worker and result service application yaml file.
+Verify the pods and service to use kubernetes commands for service running status. 
+ The commands are given below:
+	kubectl create -f worker-app-pod.yml
+	kubectl create -f result-app-pod.yml
+	kubectl create -f result-app-service.yml
+	kubectl get pods,svc
+
+To Test Voting Application
+	Finally we are going to run the voting application in our local web page
+And put the voting then check the result web page. It will show the result for percentage of vote.
+
+
+
+
+
+
